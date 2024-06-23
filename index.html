@@ -1,0 +1,206 @@
+<html lang="fr" class="h-full">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compression JPEG</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+    <style>
+        body { 
+            font-family: Verdana, sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            min-height: 100vh; 
+        } 
+        @keyframes fadeIn { 
+            from { opacity: 0; } 
+            to { opacity: 1; } 
+        } 
+        .animate-fade-in { 
+            animation: fadeIn 0.5s ease-in-out; 
+        } 
+        .content-wrapper { 
+            flex: 1 0 auto; 
+        } 
+        .dashed-border {
+            background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%233B82F6' stroke-width='4' stroke-dasharray='12%2c 16' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+        }
+        @media (max-width: 640px) {
+            .button-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .button-container > * {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-gray-200">
+    <div class="content-wrapper container mx-auto px-4 py-12">
+        <header class="flex flex-col md:flex-row items-center justify-between mb-12">
+            <div class="flex items-center space-x-4 mb-4 md:mb-0">
+                <div>
+                    <h1 class="text-4xl font-bold text-blue-400">Compression JPEG</h1>
+                    <p class="text-sm text-gray-400">PROJET DE STAGE DE YASSINE</p>
+                </div>
+            </div>
+            <nav>
+                <ul class="flex space-x-6 text-gray-400">
+                    <li class="hover:text-blue-400 transition-colors"><a href="#" class="font-medium">JPEG</a></li>
+                    <li class="hover:text-blue-400 transition-colors cursor-pointer coming-soon">PNG</li>
+                    <li class="hover:text-blue-400 transition-colors cursor-pointer coming-soon">GIF</li>
+                    <li class="hover:text-blue-400 transition-colors cursor-pointer coming-soon">PDF</li>
+                </ul>
+            </nav>
+        </header>
+        <main class="bg-gray-800 rounded-xl shadow-2xl p-8 mb-12">
+            <p class="text-gray-300 mb-6">Sélectionnez jusqu'à 20 images JPG ou JPEG depuis votre appareil, ou faites glisser et déposez les fichiers dans la zone de dépôt.</p>
+            <p class="text-gray-300 mb-8">Téléchargez les images compressées séparément ou toutes à la fois, regroupées dans une archive ZIP.</p>
+
+            <div id="dropZone" class="dashed-border rounded-xl p-12 text-center bg-gray-700 transition-all hover:bg-gray-600 cursor-pointer">
+                <input type="file" id="fileInput" accept="image/jpeg, image/jpg" class="hidden" multiple>
+                <i class="fas fa-file-upload text-6xl text-blue-400 mb-4"></i>
+                <p class="text-2xl font-semibold mb-4">Glissez & Déposez les fichiers ici</p>
+                <p class="text-gray-400 mb-6">ou</p>
+                <div class="button-container flex flex-col sm:flex-row justify-center sm:space-x-4 space-y-4 sm:space-y-0">
+                    <label for="fileInput" id="selectButton" class="bg-blue-600 text-white px-6 py-3 rounded-full text-lg font-semibold cursor-pointer hover:bg-blue-700 transition-colors text-center">SÉLECTIONNER DES FICHIERS</label>
+                    <button id="clearButton" class="bg-red-600 text-white px-6 py-3 rounded-full text-lg font-semibold hover:bg-red-700 transition-colors">EFFACER</button>
+                    <button id="downloadAllButton" class="bg-green-600 text-white px-6 py-3 rounded-full text-lg font-semibold hover:bg-green-700 transition-colors hidden">TOUT TÉLÉCHARGER</button>
+                </div>
+            </div>
+        </main>
+
+        <div id="resultContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-3"></div>
+
+        <h2 class="text-3xl font-bold mt-2 mb-14 text-blue-400 text-center">Comprendre la compression JPEG</h2>
+        <section>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-gray-800 rounded-xl shadow-lg p-8 text-center">
+                    <i class="fas fa-compress text-4xl text-blue-400 mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-4">Types de compression</h3>
+                    <p class="text-gray-300">JPEG utilise une compression avec perte, qui réduit à la fois la taille du fichier et légèrement la qualité de l'image.</p>
+                </div>
+                <div class="bg-gray-800 rounded-xl shadow-lg p-8 text-center">
+                    <i class="fas fa-cogs text-4xl text-blue-400 mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-4">Méthode de compression</h3>
+                    <p class="text-gray-300">La méthode de compression utilise la bibliothèque GD de PHP pour redimensionner les grandes images et appliquer la compression JPEG. Cette méthode permet de réduire la taille du fichier sans perte de qualité significative.</p>
+                </div>
+                <div class="bg-gray-800 rounded-xl shadow-lg p-8 text-center">
+                    <i class="fas fa-exclamation-triangle text-4xl text-blue-400 mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-4">Notes importantes</h3>
+                    <p class="text-gray-300">Dans certains cas, la compression peut ne pas réduire significativement la taille du fichier ou peut même l'augmenter légèrement. Les résultats peuvent varier en fonction de l'image originale.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mt-16">
+            <h2 class="text-3xl font-bold mb-12 text-blue-400 text-center underline-title">La compression d'images : Un atout majeur pour l'e-commerce</h2>
+            <div class="bg-gray-800 rounded-xl shadow-2xl p-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-4 md:px-8 lg:px-12">
+                    <div>
+                        <div class="flex items-start"> <i class="fas fa-rocket text-4xl text-blue-400 mr-4"></i>
+                            <div>
+                                <h3 class="text-xl font-semibold mb-2 text-white">Vitesse de chargement améliorée</h3>
+                                <p class="text-gray-300">Des images compressées permettent un chargement plus rapide de votre site, réduisant le taux de rebond et améliorant l'expérience utilisateur.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-start"> <i class="fas fa-mobile-alt text-4xl text-blue-400 mr-4"></i>
+                            <div>
+                                <h3 class="text-xl font-semibold mb-2 text-white">Optimisation mobile</h3>
+                                <p class="text-gray-300">Les images légères sont essentielles pour les utilisateurs mobiles, qui représentent une part croissante du trafic e-commerce.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-start"> <i class="fas fa-search text-4xl text-blue-400 mr-4"></i>
+                            <div>
+                                <h3 class="text-xl font-semibold mb-2 text-white">SEO amélioré</h3>
+                                <p class="text-gray-300">Les moteurs de recherche favorisent les sites rapides. La compression d'images peut donc améliorer votre classement dans les résultats de recherche.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-start"> <i class="fas fa-chart-line text-4xl text-blue-400 mr-4"></i>
+                            <div>
+                                <h3 class="text-xl font-semibold mb-2 text-white">Taux de conversion accru</h3>
+                                <p class="text-gray-300">Un site plus rapide et plus réactif encourage les visiteurs à explorer davantage et à finaliser leurs achats, augmentant ainsi vos ventes.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <footer class="mt-auto py-8 text-center text-gray-400">
+        <a href="https://github.com/th3k3y" target="_blank" rel="noopener noreferrer">
+            <i class="fab fa-github text-2xl text-gray-400 hover:text-blue-400 transition-colors"></i>
+        </a>
+    </footer>
+
+    <div id="comingSoonModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-gray-800 p-8 rounded-xl shadow-2xl animate-fade-in">
+            <h3 class="text-2xl font-bold text-blue-400 mb-4">Bientôt disponible !</h3>
+            <p class="text-gray-300">Cette fonctionnalité est actuellement en développement.</p>
+            <button id="closeModal" class="mt-6 bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition-colors">Fermer</button>
+        </div>
+    </div>
+<script src="script.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => { document.querySelectorAll('.coming-soon').forEach(item => { item.addEventListener('click', () => { document.getElementById('comingSoonModal').classList.remove('hidden'); }); });        document.getElementById('closeModal').addEventListener('click', () => {
+                document.getElementById('comingSoonModal').classList.add('hidden');
+            });
+    
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.getElementById('fileInput');
+            const selectButton = document.getElementById('selectButton');
+            const clearButton = document.getElementById('clearButton');
+            const downloadAllButton = document.getElementById('downloadAllButton');
+            const resultContainer = document.getElementById('resultContainer');
+    
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('bg-gray-600');
+            });
+    
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('bg-gray-600');
+            });
+    
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('bg-gray-600');
+                handleFiles(e.dataTransfer.files);
+            });
+    
+            fileInput.addEventListener('change', () => {
+                handleFiles(fileInput.files);
+            });
+    
+            clearButton.addEventListener('click', clearResults);
+    
+            function handleFiles(files) {
+            }
+    
+            function clearResults() {
+                resultContainer.innerHTML = '';
+                fileInput.value = '';
+                downloadAllButton.classList.add('hidden');
+            }
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+        const titles = document.querySelectorAll('.underline-title');
+        titles.forEach(title => {
+            const textWidth = title.offsetWidth;
+            title.style.setProperty('--underline-width', `${textWidth}px`);
+        });
+    });
+</script>
+</body>
+
+</html>
