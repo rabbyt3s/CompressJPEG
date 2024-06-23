@@ -1,0 +1,2 @@
+# CompressJPEG
+Compress your images!
