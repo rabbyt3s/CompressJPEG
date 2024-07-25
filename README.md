@@ -23,7 +23,7 @@ This project is a web-based JPEG compression tool that allows users to compress 
 - HTML5
 - CSS3 (with Tailwind CSS)
 - JavaScript
-- PHP (server-side compression, not shown in the provided code)
+- PHP 
 - Font Awesome for icons
 - JSZip for creating ZIP archives
 
@@ -73,7 +73,7 @@ Ce projet est un outil en ligne de compression JPEG qui permet aux utilisateurs 
 - HTML5
 - CSS3 (avec Tailwind CSS)
 - JavaScript
-- PHP (compression côté serveur, non montrée dans le code fourni)
+- PHP 
 - Font Awesome pour les icônes
 - JSZip pour la création d'archives ZIP
 
