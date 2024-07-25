@@ -89,7 +89,7 @@ Ce projet est un outil en ligne de compression JPEG qui permet aux utilisateurs 
 - Le fichier HTML principal contient la structure et le contenu de l'application web.
 - Tailwind CSS est utilisé pour le style, avec du CSS personnalisé pour les animations et le design responsive.
 - JavaScript gère les interactions utilisateur, les téléchargements de fichiers et les mises à jour dynamiques du contenu.
-- Le code PHP côté serveur (non inclus dans l'extrait fourni) gérerait la compression réelle des images.
+- Le code PHP
 
 ### Développements Futurs
 
